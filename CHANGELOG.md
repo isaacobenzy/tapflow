@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- **`tapflow setup android` works on Windows without Android Studio.** It reuses a JDK 17+ or installs Temurin 21 (through winget, or a checksummed zip from Adoptium when winget is missing), downloads Google's command-line tools checked against Google's own manifest, installs only the SDK packages that are missing, and creates the same `tapflow-*` emulators as on a Mac. An SDK that Android Studio left behind is extended, not replaced. It ends by saying whether the emulator has hardware acceleration and, if not, what to turn on in Windows. It needs no administrator rights and changes no Windows settings. For a remote shell or a script, `tapflow setup android --yes` (`-y`) answers those prompts itself. It never elevates, so it skips winget and uses the per-user zip for a missing JDK. Off Windows, `--yes` is ignored with a warning, and it never answers sudo, the iOS steps or the network-filter approval. Windows is community-supported and not tested by the maintainers.
+
 ### Changed
 
 - **`tapflow flow run` keeps its screenshots as JPEG, and the Flow Runs page says when one was not kept.** A run asks the device for JPEG: a large screen's PNG (an iPhone Air on a map, 5.4 MB) went past the relay's 5 MB limit, and the flow's card showed nothing where its screenshot should be. The same screen is about 1.3 MB as JPEG. The Android agent now makes JPEG with macOS's own `sips` when asked, and a run's failure screenshot in the artifacts directory is named `-failure.jpg` when it is one; adjust a CI step that collects only `*.png` from there. When a screenshot is still not kept, the card says why: over the limit, not an image, the relay's disk full, or the device did not return one. Showing the reason needs the relay from this release, and "did not return one" also this release's `tapflow`.
